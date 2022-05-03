@@ -27,15 +27,19 @@ img,
     padding-right: 1rem;
 }
 
-.nav-links .nav-link {
+.nav-links .nav-link,
+.nav-links .nav-link a {
     margin: 0 0.5rem;
-    color: #666;
+    color: rgba(51, 51, 51, 0.8);
+    cursor: pointer;
 }
 
-.nav-links .nav-link a { 
-    color: #666;
-    text-decoration: none;
- }
+.nav-links .nav-link a { text-decoration: none; }
+
+.nav-links .nav-link:hover,
+.nav-links .nav-link a:hover { 
+    color: rgba(51, 51, 51, 1);
+}
 
 header {
     margin-top: 0;
@@ -95,6 +99,7 @@ header {
     background-color: #c7c7c7;
     border-radius: 10px;
     text-align: center;
+    position: relative;
 }
 
 .img-wrapper {
@@ -116,12 +121,114 @@ header {
     padding-bottom: 1rem;
 }
 
-/* .card-text a { 
-    color: #000;
-    text-decoration: none;
+.card-popup {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background-color: rgba(238, 238, 238, 0.75);
+    
+}
+
+.card-popup p {
+    margin-top: 2rem;
+    max-width: 20ch;
+    margin-left: auto;
+    margin-right: auto;
+    color: #333;
+    
+}
+
+.park:hover .card-popup {
+    opacity: 1;
+}
+
+.park-modal {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    transition: all 0.35s ease-in;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2;
+}
+
+.modal-dialog {
+    max-width: 800px;
+    max-height: 80vh;
+    background: #eee;
+    color: #333;
+    padding: 1.5rem;
+    border-radius: 10px;
+    z-index: 5;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    color: rgba(51, 51, 51, 0.6);
+}
+
+.modal-header .fa-times {
+    font-size: 1.5rem;
+    transition: all 0.2s ease-in;
+    cursor: pointer;
+}
+
+.modal-header .fa-times:hover { color: rgba(51, 51, 51, 1); }
+
+.modal-body {
+    display: flex;
+    align-items: center;
+}
+
+.modal-body .modal-img-wrapper {
+    max-width: 400px;
+    margin-right: 0.75rem;
+}
+
+.modal-body .modal-img-wrapper img { border-radius: 10px; }
+
+.modal-body .text-wrapper {
+    line-height: 1.6rem;
+    padding: 0 1rem;
+    letter-spacing: .25px;
+}
+
+.modal-body .text-wrapper .directions {
+    color: #333;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.modal-dialog .modal-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fa-heart {
+    font-size: 1.5rem;
+    color: rgba(51, 51, 51, 0.6);
+    transition: 0.2s;
+}
+
+.fa-heart:hover { color: rgba(51, 51, 51, 1); }
+
+/* .parks .park:hover .card-popup p { 
+    opacity: 1;
+    background-color: #c1c1c1;
+    color: #666;
  } */
-
-
- .park .modal {
-     display: none;
- }
