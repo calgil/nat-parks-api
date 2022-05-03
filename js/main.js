@@ -3,12 +3,25 @@ const isVisible = 'is-visible';
 const modalOpen = '[data-open]';
 const modalClose = '[data-close]';
 const modalBg = '.park-modal';
+const favorites = '.favorites';
 
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
 
 const stateFilter = document.querySelector('.state-filter');
+const openFavorites = document.querySelector(favorites);
 
+// const favoritesDropdown = () => {
+//     openFavorites.addEventListener('click', (e) => {
+//         if(e.target.className.includes('drop-down')){
+//             e.target.classList.remove('drop-down')
+//         } else {
+//             e.target.classList.add('drop-down');
+//         }
+//     })
+// }
+
+// favoritesDropdown();
 
 
 const closeModal = () => {
