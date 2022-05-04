@@ -1,27 +1,18 @@
 
-const isVisible = 'is-visible';
+// const isVisible = 'is-visible';
 const modalOpen = '[data-open]';
 const modalClose = '[data-close]';
 const modalBg = '.park-modal';
-const favorites = '.favorites';
+const heart = '.fa-heart';
 
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
 
 const stateFilter = document.querySelector('.state-filter');
-const openFavorites = document.querySelector(favorites);
 
-// const favoritesDropdown = () => {
-//     openFavorites.addEventListener('click', (e) => {
-//         if(e.target.className.includes('drop-down')){
-//             e.target.classList.remove('drop-down')
-//         } else {
-//             e.target.classList.add('drop-down');
-//         }
-//     })
-// }
+const hearts = document.querySelectorAll(heart);
 
-// favoritesDropdown();
+
 
 
 const closeModal = () => {
@@ -45,11 +36,16 @@ const getParkCode = () => {
     let openModal = container.childNodes;
     openModal.forEach((park) => {
         park.addEventListener('click', (e) => {
-            parkCode = e.target.dataset.open;
+            if(e.target.dataset.open === null || e.target.dataset.open === undefined) {
+                parkCode = e.target.parentElement.dataset.open
+            } else {
+                parkCode = e.target.dataset.open;
+            }
             makeModal(parkCode);
         })
     })
 }
+
 stateFilter.addEventListener('change', (e) => {
     const value = e.target.value.toLowerCase();
     const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
@@ -120,7 +116,8 @@ const makeModal = (parkCode) => {
             modalContainer.appendChild(parkModal);
         })
     })
-    .then(() => closeModal());
+    .then(() => closeModal())
+    .then(() => console.log(hearts))
 }
 
 
