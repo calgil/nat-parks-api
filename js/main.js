@@ -7,11 +7,30 @@ const heart = '.fa-heart';
 
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
+const favContainer = document.querySelector('.favorite-container')
 
 const stateFilter = document.querySelector('.state-filter');
 
-const hearts = document.querySelectorAll(heart);
+const favorites = [];
 
+const makeFavorites = (favorites) => {
+    favContainer.innerHTML = '';
+    favorites.forEach((park) => {
+        favContainer.appendChild(park);
+        // console.log(park);
+    })
+}
+
+const findHearts = () => {
+    const hearts = document.querySelector(heart);
+    hearts.addEventListener('click', (e) => {
+        e.target.classList.add('favorite');
+        const modal = e.target.parentElement.parentElement.parentElement.parentElement.parentElement;
+        favorites.push(modal);
+        // console.log(favorites);
+    })
+    makeFavorites(favorites);
+}
 
 
 
@@ -117,9 +136,8 @@ const makeModal = (parkCode) => {
         })
     })
     .then(() => closeModal())
-    .then(() => console.log(hearts))
+    .then(() => findHearts())
 }
-
 
 
 

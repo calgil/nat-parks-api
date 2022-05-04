@@ -225,6 +225,8 @@ header {
     transition: 0.2s;
 }
 
+i.fa-solid.fa-heart.favorite  { color: #db506a; }
+
 .fa-heart:hover { color: rgba(51, 51, 51, 1); }
 
 /* .parks .park:hover .card-popup p { 
