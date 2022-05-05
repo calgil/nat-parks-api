@@ -1,23 +1,26 @@
 
-// const isVisible = 'is-visible';
+const isVisible = 'is-visible';
 const modalOpen = '[data-open]';
 const modalClose = '[data-close]';
 const modalBg = '.park-modal';
 const heart = '.fa-heart';
 
+const favContainer = document.querySelector('.favorites');
+const favTarget = document.querySelector('.favorite-drop-down');
+
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
-const favContainer = document.querySelector('.favorite-container')
 
 const stateFilter = document.querySelector('.state-filter');
+
 
 const favorites = [];
 
 const makeFavorites = (favorites) => {
-    favContainer.innerHTML = '';
+    console.log('up',favorites);
     favorites.forEach((park) => {
-        favContainer.appendChild(park);
-        // console.log(park);
+        favContainer.appendChild(park)
+        console.log('Here', park);
     })
 }
 
@@ -25,14 +28,25 @@ const findHearts = () => {
     const hearts = document.querySelector(heart);
     hearts.addEventListener('click', (e) => {
         e.target.classList.add('favorite');
-        const modal = e.target.parentElement.parentElement.parentElement.parentElement.parentElement;
+        const modal = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.cloneNode(true);
         favorites.push(modal);
-        // console.log(favorites);
     })
     makeFavorites(favorites);
 }
 
+favTarget.addEventListener('click', (e)=> {
+    if(e.target.className.includes(isVisible)){
+        e.target.classList.remove(isVisible);
+        favContainer.classList.remove(isVisible);
+    } else {
+        favContainer.classList.add(isVisible);
+        e.target.classList.add(isVisible);
+    }
+})
 
+// const favDropDown = () => {
+
+// }
 
 const closeModal = () => {
     document.addEventListener('keyup', (e) => {
