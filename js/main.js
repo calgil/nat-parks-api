@@ -47,15 +47,19 @@ const makeFavorites = (favorites) => {
 const addToFavorites = () => {
     // const favorites = [];
     const favParksNode = document.querySelectorAll('.park.fav-park');
-    for(const park of favParksNode){
-        const favPark = park.cloneNode(true);
-        favorites.push(favPark)
-        console.log(favorites.hasChildren());
-    }
-    // makeFavorites(favParksNode);
-   console.log('favorites array', favorites);
-   console.log('node',favParksNode);
-    
+    favParksNode.forEach((fav) => {
+        if(favorites.length === 0){
+            favorites.push(fav)
+        } else {
+            favorites.forEach((park) => {
+                if(park === fav){
+                    console.log('duplicate');
+                } else { favorites.push(fav) }
+            });
+        };
+    });
+    console.log('node',favParksNode);
+    console.log('favorites',favorites);
 };
 
 const findHearts = () => {
