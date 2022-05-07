@@ -58,6 +58,8 @@ const addToFavorites = () => {
             favorites.push(fav);
         }
     });
+    console.log('node list', favParksNode);
+    console.log('favorites', favorites);
     makeFavorites(favorites);
 };
 
