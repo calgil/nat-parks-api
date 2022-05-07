@@ -19,7 +19,7 @@ const modalContainer = document.querySelector('.modal-box');
 const stateFilter = document.querySelector('.state-filter');
 
 
-const favorites = [];
+
 // const favNames = [];
 const unique = [];
 
@@ -44,24 +44,44 @@ const makeFavorites = (favorites) => {
     };
 };
 
-const addToFavorites = () => {
-    // const favorites = [];
-    const favParksNode = document.querySelectorAll('.park.fav-park');
-    favParksNode.forEach((fav) => {
-        // const favClone = fav.cloneNode(true);
-        if(favorites.length === 0){
-            favorites.push(fav)
-        } else if (favorites.includes(fav)) {
-            console.log('duplicate');
+function isInArray(node) {
+    return (node === favContainer.childNodes) ? false : favContainer.contains(node);
+}
+
+const favorites = [];
+
+const otherAddToFavorites = () => {
+    const favParks = document.querySelectorAll('.parks .fav-park');
+    favParks.forEach((park) => {
+        const parkClone = park.cloneNode(true);
+        let parkName = park.children[1].children[0].innerHTML;
+        console.log('parkName', parkName);
+        if(favorites.length === 0) {
+            favorites.push(parkClone);
         } else {
-            
-            favorites.push(fav);
-        }
-    });
-    console.log('node list', favParksNode);
-    console.log('favorites', favorites);
+            favorites.map((fav) => {
+                let favName = fav.children[1].children[0].innerHTML;
+                console.log('map',favName);
+                if(parkName !== favName){
+                    favorites.push(park);
+                }
+            })
+        } 
+        
+    })
+    console.log('favorites',favorites);
+    console.log('favorites arrr',favParks);
     makeFavorites(favorites);
-};
+}
+
+
+// const addToFavorites = () => {
+//     const favParks = document.querySelectorAll('.parks .fav-park');
+//     favParks.forEach((park) => {
+//         favorites.push(park)
+//     })
+//     makeFavorites(favorites);
+// };
 
 const findHearts = () => {
     const hearts = document.querySelectorAll(heart);
@@ -74,7 +94,8 @@ const findHearts = () => {
                 e.target.classList.add('favorite');
                 e.target.parentElement.parentElement.classList.add('fav-park')
             }
-            addToFavorites();    
+            // addToFavorites(); 
+            otherAddToFavorites();
         })
         
     })
