@@ -12,7 +12,14 @@
     <title>National Parks</title>
 </head>
 <body>
-    <div class="container favorites">
+    <div class="favorites">
+        <div class="fav-header">
+            <h2>Favorites</h2>
+            <i class="fas fa-times close"></i>
+        </div>
+        <div class="container fav-container">
+
+        </div>
     </div>
     <nav class="nav">
         <div class="logo">
@@ -30,6 +37,7 @@
         <p>National Parks and Monuments by State</p>
     </header>
         <div class="filter">
+            <label class="state-label" for="state-filter">Select a State</label>
             <select class="state-filter" name="state-filter" id="drop-down">
                 <option>Select One</option>
                 <option value="AL">Alabama</option>
