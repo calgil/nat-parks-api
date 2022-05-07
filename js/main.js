@@ -48,18 +48,17 @@ const addToFavorites = () => {
     // const favorites = [];
     const favParksNode = document.querySelectorAll('.park.fav-park');
     favParksNode.forEach((fav) => {
+        // const favClone = fav.cloneNode(true);
         if(favorites.length === 0){
             favorites.push(fav)
+        } else if (favorites.includes(fav)) {
+            console.log('duplicate');
         } else {
-            favorites.forEach((park) => {
-                if(park === fav){
-                    console.log('duplicate');
-                } else { favorites.push(fav) }
-            });
-        };
+            
+            favorites.push(fav);
+        }
     });
-    console.log('node',favParksNode);
-    console.log('favorites',favorites);
+    makeFavorites(favorites);
 };
 
 const findHearts = () => {
@@ -73,7 +72,7 @@ const findHearts = () => {
                 e.target.classList.add('favorite');
                 e.target.parentElement.parentElement.classList.add('fav-park')
             }
-            addToFavorites();
+            addToFavorites();    
         })
         
     })
