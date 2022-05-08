@@ -6,6 +6,7 @@ const modalClose = '[data-close]';
 const modalBg = '.park-modal';
 const heart = '.fa-heart';
 const favPark = 'fav-park';
+const favorite = 'favorite';
 
 const favDropDown = document.querySelector('.favorites');
 const favHeader = document.querySelector('.fav-header');
@@ -15,120 +16,64 @@ const favClose = document.querySelector('.close');
 
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
-
 const stateFilter = document.querySelector('.state-filter');
 
 
 
-// const favNames = [];
-const unique = [];
-
-// const removeDuplicates = (favorites) => {
-//     console.log('favorites', favorites);
-//     favorites.forEach((fav) => {
-//         const name = fav.children[1].children[0].innerHTML
-//         if(unique.includes(name)){
-//             console.log('duplicate');
-//         } else {
-//             unique.push(name)
-//         }
-//     });
-//     makeFavorites(unique)
-//     console.log('unique',unique);
-// };
-
-const makeFavorites = (favorites) => {
-    for(const fav of favorites) {
-        fav.classList.add(hidden);
-        favContainer.appendChild(fav);
-    };
-};
-
-function isInArray(node) {
-    return (node === favContainer.childNodes) ? false : favContainer.contains(node);
+const addToFavorites = (parkId) => {
+    const park = document.getElementById(parkId);
+    const thisHeart = park.querySelector(heart);
+    thisHeart.classList.add(favorite)
+    park.classList.add(favPark);
+    park.classList.add(hidden);
+    favContainer.appendChild(park);
 }
 
-const favorites = [];
-
-const otherAddToFavorites = () => {
-    const favParks = document.querySelectorAll('.parks .fav-park');
-    favParks.forEach((park) => {
-        const parkClone = park.cloneNode(true);
-        let parkName = park.children[1].children[0].innerHTML;
-        console.log('parkName', parkName);
-        if(favorites.length === 0) {
-            favorites.push(parkClone);
-        } else {
-            favorites.map((fav) => {
-                let favName = fav.children[1].children[0].innerHTML;
-                console.log('map',favName);
-                if(parkName !== favName){
-                    favorites.push(park);
-                }
-            })
-        } 
-        
-    })
-    console.log('favorites',favorites);
-    console.log('favorites arrr',favParks);
-    makeFavorites(favorites);
+const removeFromFavorites = (parkId) => {
+    const park = document.getElementById(parkId);
+    const thisHeart = park.querySelector(heart);
+    thisHeart.classList.remove(favorite)
+    park.classList.remove(favPark);
+    park.classList.remove(hidden);
+    container.appendChild(park);
 }
 
-
-// const addToFavorites = () => {
-//     const favParks = document.querySelectorAll('.parks .fav-park');
-//     favParks.forEach((park) => {
-//         favorites.push(park)
-//     })
-//     makeFavorites(favorites);
-// };
-
-const findHearts = () => {
+const favoritesClick = () => {
     const hearts = document.querySelectorAll(heart);
     hearts.forEach((heart) => {
         heart.addEventListener('click', (e) => {
-            if(e.target.className.includes('favorite')){
-                e.target.classList.remove('favorite')
-                e.target.parentElement.parentElement.classList.remove('fav-park')
-            } else {
-                e.target.classList.add('favorite');
-                e.target.parentElement.parentElement.classList.add('fav-park')
-            }
-            // addToFavorites(); 
-            otherAddToFavorites();
+            const parkId = e.target.parentElement.parentElement.attributes.id.value;
+            e.target.className.includes(favorite)
+            ? removeFromFavorites(parkId)
+            : addToFavorites(parkId); 
         })
-        
     })
-    
+}
+
+const hideFavorites = (park) => {
+    park.classList.add(hidden);
+    park.classList.remove(isVisible);
+}
+
+const showFavorites = (park) => {
+    park.classList.remove(hidden);
+    park.classList.add(isVisible);
 }
 
 const displayFavorites = (parks) => {
     for(const park of parks){
-        if(favContainer.className.includes(isVisible)){
-            park.classList.remove(hidden);
-            park.classList.add(isVisible);
-        } else if(park.className.includes(isVisible)){
-            park.classList.remove(isVisible);
-            park.classList.add(hidden)
-        }
-        // for(const fav of favContainer.children){
-        //     const name = fav.children[1].children[0]
-        //     favNames.push(name);
-        // }
-        // console.log('favNames',favNames);
-        // console.log('here!', park.children[1].children[0]);
+        favContainer.className.includes(isVisible)
+        ? showFavorites(park)
+        : hideFavorites(park)
     }
-    // console.log('trying to just make one of each',parks);
-    
-    getParkCode();
 }
 
 favOpen.addEventListener('click', (e)=> {
     const favCards = favContainer.children;
         favContainer.classList.add(isVisible);
-        favHeader.classList.add(isVisible)
-        favDropDown.classList.add(isVisible)
-    displayFavorites(favCards)
+        favHeader.classList.add(isVisible);
+        favDropDown.classList.add(isVisible);
+    displayFavorites(favCards);
 })
 
 favClose.addEventListener('click', (e) => {
@@ -138,7 +83,7 @@ favClose.addEventListener('click', (e) => {
         favDropDown.classList.remove(isVisible);
         for(const card of favContainer.children) {
             card.classList.remove(isVisible);
-            card.classList.add(hidden)
+            card.classList.add(hidden);
         }
     }
 })
@@ -183,6 +128,8 @@ stateFilter.addEventListener('change', (e) => {
                 const {altText, url} = park.images[0];
                 const parkCard = document.createElement('div');
                 parkCard.classList.add(`park`);
+                // parkCard.classList.add(`${parkCode}`)
+                parkCard.setAttribute("id", `${parkCode}`)
                 parkCard.innerHTML = `
                 <div class="img-wrapper">
                     <img class="park-img" src="${url}" alt ="${altText}">
@@ -198,7 +145,7 @@ stateFilter.addEventListener('change', (e) => {
                 container.appendChild(parkCard);
             })
         })
-        .then(() => findHearts())
+        .then(() => favoritesClick())
         .then( ()=> getParkCode())
         
     })
@@ -228,6 +175,7 @@ const makeModal = (parkCode) => {
                     <div class="text-wrapper">
                         <p>${description}</p>
                         <a class="directions" href="${directionsUrl}" target="_blank">Directions</a>
+                        <i class="fa-solid fa-heart ${parkCode}"></i>
                     </div>
                 </div>
             </div>
@@ -235,6 +183,7 @@ const makeModal = (parkCode) => {
             modalContainer.appendChild(parkModal);
         })
     })
+    // .then(() => findHearts()) Perhaps for adding to favs from modal
     .then(() => closeModal())
     
 }
