@@ -7,21 +7,69 @@ const modalBg = '.park-modal';
 const heart = '.fa-heart';
 const favPark = 'fav-park';
 const favorite = 'favorite';
+const designation = '[data-designation]';
 const favIds = [];
 
 const favDropDown = document.querySelector('.favorites');
 const favHeader = document.querySelector('.fav-header');
 const favContainer = document.querySelector('.fav-container');
-// const favElms = document.
+// const favTypeContainer = document.querySelector('fav-designation');
 
 const favOpen = document.querySelector('.favorite-drop-down');
 const favClose = document.querySelector('.close');
 
+const typeContainer = document.querySelector('.designation');
 const container = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
 const stateFilter = document.querySelector('.state-filter');
 
+const displayTotal = (countArr) => {
+    typeContainer.innerHTML = " ";
+    countArr.forEach((type) => {
+        const {name, count} = type;
+        if(count > 0){
+            const info = document.createElement('div');
+            info.classList.add('counter');
+            info.innerHTML = `
+            ${name}: ${count}
+            `
+            typeContainer.appendChild(info);
+        }
+    })
+}
 
+const findTotal = () => {
+    const designations = document.querySelectorAll(designation);
+    const typeCounts = [
+        natPark = {
+            name: 'National Parks',
+            count: 0,
+        },
+         natMonument = {
+            name: 'National Monuments',
+            count: 0,
+        },
+         natMemorial = {
+            name: 'National Memorials',
+            count: 0,
+        },
+         other = {
+            name: 'Other',
+            count: 0,
+        },
+    ]
+    for(const park of designations){
+        const parkType = park.dataset.designation;
+        if(parkType.includes('National Park')){
+            typeCounts[0].count++
+        } else if(parkType.includes('National Monument')){
+            typeCounts[1].count++
+        } else if (parkType.includes('National Memorial')){
+            typeCounts[2].count++
+        } else { typeCounts[3].count++ }
+    }
+    displayTotal(typeCounts);
+}
 
 const addToFavorites = (parkId) => {
     const park = document.getElementById(parkId);
@@ -134,7 +182,6 @@ const getParkCode = () => {
     })
 }
 
-
 stateFilter.addEventListener('change', (e) => {
     const value = e.target.value.toLowerCase();
     const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
@@ -144,14 +191,14 @@ stateFilter.addEventListener('change', (e) => {
         .then((res) => { 
             container.innerHTML = '';
             res.data.forEach(park => {
-                const {fullName, parkCode} = park;
+                const {fullName, parkCode, designation} = park;
                 const {altText, url} = park.images[0];
                 if(!favIds.includes(parkCode)){
                     const parkCard = document.createElement('div');
                     parkCard.classList.add(`park`);
-                    parkCard.setAttribute("id", `${parkCode}`)
+                    parkCard.setAttribute("id", `${parkCode}`);
                     parkCard.innerHTML = `
-                    <div class="img-wrapper">
+                    <div class="img-wrapper" data-designation="${designation}">
                         <img class="park-img" src="${url}" alt ="${altText}">
                     </div>
                     <div class="card-text">
@@ -167,6 +214,7 @@ stateFilter.addEventListener('change', (e) => {
             })
         })
         .then(() => favoritesClick())
+        .then(() => findTotal())
         .then( ()=> getParkCode())
         
     })

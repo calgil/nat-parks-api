@@ -144,6 +144,17 @@ header {
     flex-flow: wrap;
 }
 
+.designation {
+    margin-top: 0.5rem;
+}
+
+.counter {
+    margin: 1rem;
+    background-color: #e2e2e2;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
 .parks { margin-top: 2rem; }
 
 .park {
