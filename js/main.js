@@ -35,7 +35,9 @@ const addToFavorites = (parkId) => {
 const removeFromFavorites = (parkId) => {
     const park = document.getElementById(parkId);
     const thisHeart = park.querySelector(heart);
+    park.classList.remove(isVisible)
     thisHeart.classList.remove(favorite);
+    thisHeart.classList.remove('fav-park');
     favContainer.removeChild(park);
     container.insertAdjacentElement('afterbegin', park);
     const index = favIds.indexOf(parkId);
@@ -56,11 +58,9 @@ const updateFavoriteList = () => {
 
 const favoritesClick = () => {
     const hearts = document.querySelectorAll(heart);
-    // const parkIds = [];
     hearts.forEach((heart) => {
         heart.addEventListener('click', (e) => {
             const parkId = e.target.parentElement.parentElement.attributes.id.value;
-            // parkIds.push(parkId);
             e.target.className.includes(favorite)
             ? removeFromFavorites(parkId)
             : addToFavorites(parkId); 
