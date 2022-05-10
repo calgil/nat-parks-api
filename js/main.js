@@ -72,13 +72,14 @@ const findTotal = () => {
 };
 
 
-const removeFromFavorites = (parkId) => {
+const removeFromFavorites = (parkId, park) => {
     console.log('remove top');
-    const park = document.getElementById(parkId);
-    const thisHeart = park.querySelector(heart);
+    console.log('remove !!!', park);
+    const thisHeart = park.childNodes[3].childNodes[3];
     park.classList.remove(isVisible);
     thisHeart.classList.remove(favorite);
     thisHeart.classList.remove('fav-park');
+    console.log('fav children', favContainer.childNodes);
     favContainer.removeChild(park);
     container.insertAdjacentElement('afterbegin', park);
     removeFavId(parkId);
@@ -92,10 +93,10 @@ const removeFavId = (parkId) => {
     console.log('remove',favIds);
 };
 
-const addToFavorites = (parkId) => {
+const addToFavorites = (parkId, park) => {
     console.log('ahhh!!', parkId);
-    const park = document.getElementById(parkId);
-    console.log('add sucks', park);
+    // const park = document.getElementById(parkId);
+    console.log('add this park', park);
     const thisHeart = park.childNodes[3].childNodes[3];
     console.log('add heart top',thisHeart);
     thisHeart.classList.add(favorite);
@@ -107,25 +108,19 @@ const addToFavorites = (parkId) => {
     console.log('add',favIds);
 };
 
-const handleClickEvent = (park, parkId) => {
-    console.log('before', park.className);
-    park.className.includes('.fav-park')
-    ? removeFromFavorites(parkId)
-    : addToFavorites(park, parkId);
-}
-
-
 const favoritesClick = () => {
     const hearts = document.querySelectorAll(heart);
     for(const heart of hearts){
         heart.addEventListener('click', (e) => {
             console.log('click!');
             const park = e.target.parentElement.parentElement;
+            console.log('freaking click', park);
+            console.log('freaking click!!!!!!', park.attributes.id.value);
             const parkId = park.attributes.id.value;
             console.log('id array', favIds);
-            park.className.includes('fav-park')
-            ? removeFromFavorites(parkId)
-            : addToFavorites(parkId);
+            favIds.includes(parkId)
+            ? removeFromFavorites(parkId, park)
+            : addToFavorites(parkId, park);
             console.log('after',favIds);
         })
     }
