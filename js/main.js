@@ -71,7 +71,6 @@ const findTotal = () => {
     displayTotal(typeCounts);
 };
 
-// The problem has to be somewhere around here. Somehow the function is being called twice AHHHH! Everything is terrible!!!!!
 
 const removeFromFavorites = (parkId) => {
     console.log('remove top');
@@ -115,8 +114,6 @@ const handleClickEvent = (park, parkId) => {
     : addToFavorites(park, parkId);
 }
 
-// Why is this being called more than once Maybe make two functions. One finds non favorites after load
-// Other finds favs after favs tab is clicked? This blows a fat one tho
 
 const favoritesClick = () => {
     const hearts = document.querySelectorAll(heart);
@@ -127,7 +124,7 @@ const favoritesClick = () => {
             const parkId = park.attributes.id.value;
             console.log('id array', favIds);
             park.className.includes('fav-park')
-            ?removeFromFavorites(parkId)
+            ? removeFromFavorites(parkId)
             : addToFavorites(parkId);
             console.log('after',favIds);
         })
