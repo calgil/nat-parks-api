@@ -71,7 +71,7 @@ const findTotal = () => {
     displayTotal(typeCounts);
 };
 
-// The problem has to be somewhere around here. Somehow the function is being called twice 
+// The problem has to be somewhere around here. Somehow the function is being called twice AHHHH! Everything is terrible!!!!!
 
 const removeFromFavorites = (parkId) => {
     const park = document.getElementById(parkId);
@@ -79,39 +79,67 @@ const removeFromFavorites = (parkId) => {
     park.classList.remove(isVisible);
     thisHeart.classList.remove(favorite);
     thisHeart.classList.remove('fav-park');
-    favContainer.removeChild(park);
+    // favContainer.removeChild(park);5
     container.insertAdjacentElement('afterbegin', park);
     removeFavId(parkId);
+    console.log('remove top');
 };
 
 const removeFavId = (parkId) => {
+    console.log('id!', parkId);
     const index = favIds.indexOf(parkId);
+    console.log('index', index);
     favIds.splice(index, 1);
     console.log('remove',favIds);
 };
 
-const addToFavorites = (parkId) => {
-    const park = document.getElementById(parkId);
+const addToFavorites = (park, parkId) => {
+    console.log('ahhh!!', parkId);
+    console.log('add sucks', park);
+    // addClass(park);
+        
+        favContainer.appendChild(park);
+        favIds.push(parkId);
+        console.log('add',favIds);
+};
+
+const addClass = (park) => {
     const thisHeart = park.childNodes[3].childNodes[3];
-    thisHeart.classList.add(favorite)
+    console.log('add heart top',thisHeart);
+    thisHeart.classList.add(favorite);
+    console.log('add heart',thisHeart);
     park.classList.add(favPark);
     park.classList.add(hidden);
-    favContainer.appendChild(park);
-    favIds.push(parkId);
-    console.log('add',favIds);
-};
+}
+
+const handleClickEvent = (park, parkId) => {
+    console.log('before', park.className);
+    park.className.includes('.fav-park')
+    ? removeFromFavorites(parkId)
+    : addToFavorites(park, parkId);
+    // console.log('park', park.classList);
+    // console.log('parkId', parkId);
+}
+
+// Why is this being called more than once Maybe make two functions. One finds non favorites after load
+// Other finds favs after favs tab is clicked? This blows a fat one tho
 
 const favoritesClick = () => {
     const hearts = document.querySelectorAll(heart);
     for(const heart of hearts){
         heart.addEventListener('click', (e) => {
             console.log('click!');
-            const parkId = e.target.parentElement.parentElement.attributes.id.value;
-            console.log('id', parkId, favIds);
-            !favIds.includes(parkId)
-            ? addToFavorites(parkId)
-            : removeFromFavorites(parkId);
-            console.log('after',favIds);
+            const park = e.target.parentElement.parentElement;
+            const parkId = park.attributes.id.value;
+            handleClickEvent(park, parkId);
+
+            console.log('id array', favIds);
+
+
+            // park.className.includes('fav-park')
+            // ?removeFromFavorites(parkId)
+            // : addToFavorites(parkId);
+            // console.log('after',favIds);
         })
     }
 }
@@ -213,11 +241,10 @@ stateFilter.addEventListener('change', (e) => {
             })
         })
         .then(() => console.log('before click is called'))
-        .then( ()=> getParkCode())
         .then(() => favoritesClick())
         .then(() => findTotal())
-        
-    })
+        .then( ()=> getParkCode())
+    });
 
 const makeModal = (parkCode) => {
     const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?parkCode=${ parkCode }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
