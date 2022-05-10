@@ -39,25 +39,25 @@ const displayTotal = (countArr) => {
 }
 
 const findTotal = () => {
-    const designations = document.querySelectorAll(designation);
     const typeCounts = [
         natPark = {
             name: 'National Parks',
-            count: 0,
+            count: 0
         },
          natMonument = {
             name: 'National Monuments',
-            count: 0,
+            count: 0
         },
          natMemorial = {
             name: 'National Memorials',
-            count: 0,
+            count: 0
         },
          other = {
             name: 'Other',
-            count: 0,
-        },
-    ]
+            count: 0
+        }
+    ];
+    const designations = document.querySelectorAll(designation);
     for(const park of designations){
         const parkType = park.dataset.designation;
         if(parkType.includes('National Park')){
@@ -69,53 +69,54 @@ const findTotal = () => {
         } else { typeCounts[3].count++ }
     }
     displayTotal(typeCounts);
+};
+
+// The problem has to be somewhere around here. Somehow the function is being called twice 
+
+const favoritesClick = () => {
+    const hearts = document.querySelectorAll(heart);
+    for(const heart of hearts){
+        heart.addEventListener('click', (e) => {
+            console.log('click!');
+            const parkId = e.target.parentElement.parentElement.attributes.id.value;
+            favIds.includes(parkId)
+            ? removeFromFavorites(parkId)
+            : addToFavorites(parkId); 
+        })
+        console.log(favIds);
+    }
 }
 
 const addToFavorites = (parkId) => {
     const park = document.getElementById(parkId);
-    const thisHeart = park.querySelector(heart);
+    const thisHeart = park.childNodes[3].childNodes[3];
     thisHeart.classList.add(favorite)
     park.classList.add(favPark);
     park.classList.add(hidden);
     favContainer.appendChild(park);
-}
+    favIds.push(parkId);
+    console.log('add',favIds);
+};
+
 
 const removeFromFavorites = (parkId) => {
     const park = document.getElementById(parkId);
     const thisHeart = park.querySelector(heart);
-    park.classList.remove(isVisible)
+    park.classList.remove(isVisible);
     thisHeart.classList.remove(favorite);
     thisHeart.classList.remove('fav-park');
     favContainer.removeChild(park);
     container.insertAdjacentElement('afterbegin', park);
+    removeFavId(parkId);
+};
+
+const removeFavId = (parkId) => {
     const index = favIds.indexOf(parkId);
     favIds.splice(index, 1);
-    console.log(favIds);
-}
+    console.log('remove',favIds);
+};
 
-const updateFavoriteList = () => {
-    const favorites = favContainer.children;
-    for(const park of favorites){
-        const id = park.attributes.id.value
-        if(!favIds.includes(id)){
-            favIds.push(id);
-        }
-    }
-    console.log('update',favIds);
-}
 
-const favoritesClick = () => {
-    const hearts = document.querySelectorAll(heart);
-    hearts.forEach((heart) => {
-        heart.addEventListener('click', (e) => {
-            const parkId = e.target.parentElement.parentElement.attributes.id.value;
-            e.target.className.includes(favorite)
-            ? removeFromFavorites(parkId)
-            : addToFavorites(parkId); 
-            updateFavoriteList()
-        })
-    })
-}
 
 const hideFavorites = (park) => {
     park.classList.add(hidden);
@@ -213,6 +214,7 @@ stateFilter.addEventListener('change', (e) => {
                 }
             })
         })
+        .then(() => console.log('before click is called'))
         .then(() => favoritesClick())
         .then(() => findTotal())
         .then( ()=> getParkCode())
