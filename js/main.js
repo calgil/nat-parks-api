@@ -74,15 +74,15 @@ const findTotal = () => {
 // The problem has to be somewhere around here. Somehow the function is being called twice AHHHH! Everything is terrible!!!!!
 
 const removeFromFavorites = (parkId) => {
+    console.log('remove top');
     const park = document.getElementById(parkId);
     const thisHeart = park.querySelector(heart);
     park.classList.remove(isVisible);
     thisHeart.classList.remove(favorite);
     thisHeart.classList.remove('fav-park');
-    // favContainer.removeChild(park);5
+    favContainer.removeChild(park);
     container.insertAdjacentElement('afterbegin', park);
     removeFavId(parkId);
-    console.log('remove top');
 };
 
 const removeFavId = (parkId) => {
@@ -93,32 +93,26 @@ const removeFavId = (parkId) => {
     console.log('remove',favIds);
 };
 
-const addToFavorites = (park, parkId) => {
+const addToFavorites = (parkId) => {
     console.log('ahhh!!', parkId);
+    const park = document.getElementById(parkId);
     console.log('add sucks', park);
-    // addClass(park);
-        
-        favContainer.appendChild(park);
-        favIds.push(parkId);
-        console.log('add',favIds);
-};
-
-const addClass = (park) => {
     const thisHeart = park.childNodes[3].childNodes[3];
     console.log('add heart top',thisHeart);
     thisHeart.classList.add(favorite);
     console.log('add heart',thisHeart);
     park.classList.add(favPark);
     park.classList.add(hidden);
-}
+    favContainer.appendChild(park);
+    favIds.push(parkId);
+    console.log('add',favIds);
+};
 
 const handleClickEvent = (park, parkId) => {
     console.log('before', park.className);
     park.className.includes('.fav-park')
     ? removeFromFavorites(parkId)
     : addToFavorites(park, parkId);
-    // console.log('park', park.classList);
-    // console.log('parkId', parkId);
 }
 
 // Why is this being called more than once Maybe make two functions. One finds non favorites after load
@@ -131,15 +125,11 @@ const favoritesClick = () => {
             console.log('click!');
             const park = e.target.parentElement.parentElement;
             const parkId = park.attributes.id.value;
-            handleClickEvent(park, parkId);
-
             console.log('id array', favIds);
-
-
-            // park.className.includes('fav-park')
-            // ?removeFromFavorites(parkId)
-            // : addToFavorites(parkId);
-            // console.log('after',favIds);
+            park.className.includes('fav-park')
+            ?removeFromFavorites(parkId)
+            : addToFavorites(parkId);
+            console.log('after',favIds);
         })
     }
 }
