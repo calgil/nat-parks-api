@@ -78,8 +78,8 @@ const removeFromFavorites = (parkId, park) => {
     const thisHeart = park.childNodes[3].childNodes[3];
     park.classList.remove(isVisible);
     thisHeart.classList.remove(favorite);
-    thisHeart.classList.remove('fav-park');
-    console.log('fav children', favContainer.childNodes);
+    park.classList.remove('fav-park');
+    console.log('fav children', favContainer.children);
     favContainer.removeChild(park);
     container.insertAdjacentElement('afterbegin', park);
     removeFavId(parkId);
@@ -95,7 +95,6 @@ const removeFavId = (parkId) => {
 
 const addToFavorites = (parkId, park) => {
     console.log('ahhh!!', parkId);
-    // const park = document.getElementById(parkId);
     console.log('add this park', park);
     const thisHeart = park.childNodes[3].childNodes[3];
     console.log('add heart top',thisHeart);
