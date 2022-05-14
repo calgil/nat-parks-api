@@ -2,10 +2,11 @@
 const isVisible = 'is-visible';
 const hidden = 'hidden';
 
+
 let parks = [];
 let favParks = [];
 
-const onParkChange = document.querySelector('.state-filter');
+const onStateChange = document.querySelector('.state-filter');
 const mainContainer = document.querySelector('.parks');
 const favContainer = document.querySelector('.fav-container');
 
@@ -13,8 +14,6 @@ const favHeader = document.querySelector('.fav-header');
 const favOpen = document.querySelector('.favorite-drop-down');
 const favClose = document.querySelector('.close');
 const favDropDown = document.querySelector('.favorites');
-
-
 
 
 const hideFavorites = (park) => {
@@ -41,6 +40,7 @@ favOpen.addEventListener('click', () => {
         favHeader.classList.add(isVisible);
         favDropDown.classList.add(isVisible);
         displayFavorites(favCards);
+        onParkClick(favContainer);
 })
 
 favClose.addEventListener('click', (e) => {
@@ -55,26 +55,27 @@ favClose.addEventListener('click', (e) => {
     }
 })
 
-
-// Dumb! Undefined value is being passed in!!!
-
 const addToFavorites = (parkId) => {
-    console.log(`add ${parkId}`);
     const park = parks.find(park => park.id === parkId);
-    console.log(park);
     favParks.push(park);
-    console.log(favParks);
     const index = parks.indexOf(park);
     parks.splice(index, 1);
-    // renderDom(parks, mainContainer);
-    // renderDom(favParks, favContainer);
-    // displayFavorites(favContainer.childNodes);
+    renderDom(parks, mainContainer);
+    renderDom(favParks, favContainer);
+    displayFavorites(favContainer.childNodes);
+    onParkClick(mainContainer);
 }
 
 const removeFromFavorites = (parkId) => {
+    const park = favParks.find(park => park.id === parkId);
+    parks.push(park);
+    const index = favParks.indexOf(park);
+    favParks.splice(index, 1);
+    renderDom(parks, mainContainer);
+    renderDom(favParks, favContainer);
     console.log(`remove ${parkId}`);
+    onParkClick(favContainer);
 }
-
 
 const onParkClick = (container) => {
     const hearts = container.querySelectorAll('[data-fav]');
@@ -88,11 +89,6 @@ const onParkClick = (container) => {
         })
     })
 }
-
-// const onFavParkClick = (array) => {
-//     const hearts = favContainer.querySelectorAll('[data-fav]');
-// }
-
 
 const renderDom = (array, container) => {
     container.innerHTML = '';
@@ -114,17 +110,15 @@ const renderDom = (array, container) => {
              `   
             container.appendChild(parkCard);
     })
-    onParkClick(mainContainer);
 }
 
-
-onParkChange.addEventListener('change', (e) => {
+onStateChange.addEventListener('change', (e) => {
     const value = e.target.value.toLowerCase();
     const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
     endpoint
         .then((res) => res.json())
         .then((res) => parks = res.data)
         .then(() => renderDom(parks, mainContainer))
+        .then(() => onParkClick(mainContainer))
         .catch((err) => console.log(err));
-        
     });
