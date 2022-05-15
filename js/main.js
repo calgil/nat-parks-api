@@ -15,20 +15,24 @@ let parks = [];
 let favParks = [];
 let modal = [];
 
+const favTypeContainer = document.querySelector('fav-designation');
+const favContainer = document.querySelector('.fav-container');
 const favDropDown = document.querySelector('.favorites');
 const favHeader = document.querySelector('.fav-header');
-const favContainer = document.querySelector('.fav-container');
-// const favTypeContainer = document.querySelector('fav-designation');
+
+
 
 const favOpen = document.querySelector('.favorite-drop-down');
 const favClose = document.querySelector('.close');
+
 const onClickSort = document.querySelectorAll(sortBtn);
 const favSort = document.querySelector(sortBtn);
 
+const onStateChange = document.querySelector('.state-filter');
 const typeContainer = document.querySelector('.designation');
 const mainContainer = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
-const onStateChange = document.querySelector('.state-filter');
+
 
 
 const hideFavorites = (park) => {
@@ -59,9 +63,9 @@ const sortParks = (array) => {
 
 const reverseBtnText = (btn) => {
     if (btn.className.includes('reverse')){
-        btn.innerHTML = `A - Z`;
+        btn.innerHTML = `Sort A - Z`;
     } else {
-        btn.innerHTML = `Z - A`;
+        btn.innerHTML = `Sort Z - A`;
     }
 }
 
@@ -92,11 +96,6 @@ onClickSort.forEach((btn) => {
     })
 });
 
-// const showSortBtn = () => {
-
-// }
-
-
 favOpen.addEventListener('click', () => {
         favContainer.classList.add(isVisible);
         favHeader.classList.add(isVisible);
@@ -125,53 +124,38 @@ favClose.addEventListener('click', (e) => {
 
 // I want to pull this data from the arrays
 
-// const displayTotal = (countArr) => {
-//     typeContainer.innerHTML = " ";
-//     countArr.forEach((type) => {
-//         const {name, count} = type;
-//         if(count > 0){
-//             const info = document.createElement('div');
-//             info.classList.add('counter');
-//             info.innerHTML = `
-//             ${name}: ${count}
-//             `
-//             typeContainer.appendChild(info);
-//         }
-//     })
-// }
+const displayTotal = (countArr) => {
+    typeContainer.innerHTML = " ";
+    countArr.forEach((type) => {
+        const {name, count} = type;
+        if(count > 0){
+            const info = document.createElement('div');
+            info.classList.add('counter');
+            info.innerHTML = `
+            ${name}: ${count}
+            `
+            typeContainer.appendChild(info);
+        }
+    })
+}
 
-// const findTotal = () => {
-//     const typeCounts = [
-//         natPark = {
-//             name: 'National Parks',
-//             count: 0
-//         },
-//          natMonument = {
-//             name: 'National Monuments',
-//             count: 0
-//         },
-//          natMemorial = {
-//             name: 'National Memorials',
-//             count: 0
-//         },
-//          other = {
-//             name: 'Other',
-//             count: 0
-//         }
-//     ];
-//     const designations = document.querySelectorAll(designation);
-//     for(const park of designations){
-//         const parkType = park.dataset.designation;
-//         if(parkType.includes('National Park')){
-//             typeCounts[0].count++
-//         } else if(parkType.includes('National Monument')){
-//             typeCounts[1].count++
-//         } else if (parkType.includes('National Memorial')){
-//             typeCounts[2].count++
-//         } else { typeCounts[3].count++ }
-//     }
-//     displayTotal(typeCounts);
-// };
+// If a park has any of these four designations I want to increase a counter
+
+let designations = [
+    { name: 'National Parks', count: 0 },
+    { name: 'National Monuments', count: 0 },
+    { name: 'National Memorials', count: 0 },
+    { name: 'Other', count: 0 },
+];
+
+
+const displayDesignations = (array) => {
+    array.map(park => {
+        console.log(park.designation);
+    })
+        // console.log(designations);
+}
+
 
 const removeFromFavorites = (parkId) => {
     const park = favParks.find(park => park.id === parkId);
@@ -208,8 +192,6 @@ const onParkClick = (container) => {
     })
 }
 
-
-
 const closeModal = () => {
     document.addEventListener('keyup', (e) => {
         if(e.key === 'Escape'){
@@ -231,7 +213,7 @@ const closeModal = () => {
 const renderDom = (array, container) => {
     container.innerHTML = '';
     array.forEach(park => {
-        const {id, fullName, parkCode, designation} = park;
+        const {id, fullName, designation} = park;
         const {altText, url} = park.images[0];
             const parkCard = document.createElement('div');
             parkCard.classList.add(`park`);
@@ -276,9 +258,8 @@ const renderModal = (park) => {
         </div>
         `
         modalContainer.appendChild(parkModal);
+        closeModal();
 }
-
-// Since I'm only doing find on parks. This gets jammed up when we open modal from favs
 
 const getModalData = (container, array) => {
     const openModal = container.querySelectorAll(modalOpen);
@@ -301,6 +282,6 @@ onStateChange.addEventListener('change', (e) => {
         .then(() => renderDom(parks, mainContainer))
         .then(() => onParkClick(mainContainer))
         .then(() => getModalData(mainContainer, parks))
-        // .then(() => closeModal())
+        .then(() => displayDesignations(parks))
         .catch((err) => console.log(err));
     });

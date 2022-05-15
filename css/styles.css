@@ -46,6 +46,9 @@ body {
     padding: 0.25rem 0.5rem;
     border-radius: 10px;
     border: 1px solid transparent;
+    width: 100px;
+    text-align: center;
+    margin: 0.5rem auto;
 }
 
 .sort:hover { background-color: #c8c8c8;}
