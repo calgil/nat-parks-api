@@ -8,6 +8,7 @@ const heart = '.fa-heart';
 const favPark = 'fav-park';
 const favorite = 'favorite';
 const designation = '[data-designation]';
+const sortBtn = '[data-sort]';
 
 let selectedState;
 let parks = [];
@@ -21,6 +22,8 @@ const favContainer = document.querySelector('.fav-container');
 
 const favOpen = document.querySelector('.favorite-drop-down');
 const favClose = document.querySelector('.close');
+const onClickSort = document.querySelectorAll(sortBtn);
+const favSort = document.querySelector(sortBtn);
 
 const typeContainer = document.querySelector('.designation');
 const mainContainer = document.querySelector('.parks');
@@ -46,23 +49,74 @@ const displayFavorites = (parks) => {
     }
 }
 
+const sortParks = (array) => {
+    array.sort(function(x, y) {
+        let a = x.name;
+        let b = y.name;
+        return a === b ? 0 : a > b ? 1 : -1;
+    })
+}
+
+const reverseBtnText = (btn) => {
+    if (btn.className.includes('reverse')){
+        btn.innerHTML = `A - Z`;
+    } else {
+        btn.innerHTML = `Z - A`;
+    }
+}
+
+onClickSort.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        if(!e.target.className.includes('reverse')){
+            e.target.classList.add('reverse');
+            if (e.target.dataset.sort === 'main'){
+                sortParks(parks);
+                renderDom(parks, mainContainer);
+            } else {
+                sortParks(favParks);
+                renderDom(favParks, favContainer);
+            }
+        } else {
+            e.target.classList.remove('reverse');
+            if (e.target.dataset.sort === 'main'){
+                sortParks(parks);
+                parks.reverse();
+                renderDom(parks, mainContainer);
+            } else {
+                sortParks(favParks);
+                favParks.reverse();
+                renderDom(favParks, favContainer);
+            }
+        }
+        reverseBtnText(btn);
+    })
+});
+
+// const showSortBtn = () => {
+
+// }
+
+
 favOpen.addEventListener('click', () => {
         favContainer.classList.add(isVisible);
         favHeader.classList.add(isVisible);
         favDropDown.classList.add(isVisible);
+        favSort.classList.add(isVisible);
+        favSort.classList.remove(hidden);
         displayFavorites(favContainer.children);
         onParkClick(favContainer);
-        getModalData(favContainer, favParks)
+        getModalData(favContainer, favParks);
 })
 
 
 
 favClose.addEventListener('click', (e) => {
-    console.log(`hereee ${e.target.parentElement}`);
     if(favHeader.className.includes(isVisible)){
         favHeader.classList.remove(isVisible);
         favContainer.classList.remove(isVisible);
         favDropDown.classList.remove(isVisible);
+        favSort.classList.remove(isVisible);
+        favSort.classList.add(hidden);
         displayFavorites(favContainer.children)
     }
     onParkClick(mainContainer);
@@ -235,7 +289,6 @@ const getModalData = (container, array) => {
             renderModal(parkModal);
         })
     })
-    closeModal();
 }
 
 onStateChange.addEventListener('change', (e) => {
@@ -248,5 +301,6 @@ onStateChange.addEventListener('change', (e) => {
         .then(() => renderDom(parks, mainContainer))
         .then(() => onParkClick(mainContainer))
         .then(() => getModalData(mainContainer, parks))
+        // .then(() => closeModal())
         .catch((err) => console.log(err));
     });
