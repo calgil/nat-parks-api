@@ -2,7 +2,7 @@
 const isVisible = 'is-visible';
 const hidden = 'hidden';
 
-
+let selectedState;
 let parks = [];
 let favParks = [];
 
@@ -35,11 +35,10 @@ const displayFavorites = (parks) => {
 }
 
 favOpen.addEventListener('click', () => {
-    const favCards = favContainer.children;
         favContainer.classList.add(isVisible);
         favHeader.classList.add(isVisible);
         favDropDown.classList.add(isVisible);
-        displayFavorites(favCards);
+        displayFavorites(favContainer.children);
         onParkClick(favContainer);
 })
 
@@ -53,6 +52,7 @@ favClose.addEventListener('click', (e) => {
             card.classList.add(hidden);
         }
     }
+    onParkClick(mainContainer);
 })
 
 const addToFavorites = (parkId) => {
@@ -68,12 +68,13 @@ const addToFavorites = (parkId) => {
 
 const removeFromFavorites = (parkId) => {
     const park = favParks.find(park => park.id === parkId);
-    parks.push(park);
+    if(park.states === selectedState){
+        parks.push(park);
+    }
     const index = favParks.indexOf(park);
     favParks.splice(index, 1);
     renderDom(parks, mainContainer);
     renderDom(favParks, favContainer);
-    console.log(`remove ${parkId}`);
     onParkClick(favContainer);
 }
 
@@ -82,7 +83,6 @@ const onParkClick = (container) => {
     hearts.forEach((heart) => {
         heart.addEventListener('click', (e) => {
             const parkId = e.target.dataset.fav;
-            console.log('click',parkId);
             container === mainContainer
             ? addToFavorites(parkId)
             : removeFromFavorites(parkId);
@@ -113,6 +113,7 @@ const renderDom = (array, container) => {
 }
 
 onStateChange.addEventListener('change', (e) => {
+    selectedState = e.target.value;
     const value = e.target.value.toLowerCase();
     const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
     endpoint
