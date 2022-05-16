@@ -10,17 +10,10 @@ const favorite = 'favorite';
 const designation = '[data-designation]';
 const sortBtn = '[data-sort]';
 
-let selectedState;
-let parks = [];
-let favParks = [];
-let modal = [];
-
-const favTypeContainer = document.querySelector('fav-designation');
+const favTypeContainer = document.querySelector('.fav-designation');
 const favContainer = document.querySelector('.fav-container');
 const favDropDown = document.querySelector('.favorites');
 const favHeader = document.querySelector('.fav-header');
-
-
 
 const favOpen = document.querySelector('.favorite-drop-down');
 const favClose = document.querySelector('.close');
@@ -28,12 +21,15 @@ const favClose = document.querySelector('.close');
 const onClickSort = document.querySelectorAll(sortBtn);
 const favSort = document.querySelector(sortBtn);
 
-const onStateChange = document.querySelector('.state-filter');
+const onStateChange = document.querySelector('.state-select');
 const typeContainer = document.querySelector('.designation');
 const mainContainer = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
 
-
+let selectedState;
+let parks = [];
+let favParks = [];
+let modal = [];
 
 const hideFavorites = (park) => {
     park.classList.add(hidden);
@@ -53,6 +49,8 @@ const displayFavorites = (parks) => {
     }
 }
 
+// Things get jammed up when removing favorites and sorting. Once sorted the onclick event is wrecked
+
 const sortParks = (array) => {
     array.sort(function(x, y) {
         let a = x.name;
@@ -63,9 +61,9 @@ const sortParks = (array) => {
 
 const reverseBtnText = (btn) => {
     if (btn.className.includes('reverse')){
-        btn.innerHTML = `Sort A - Z`;
-    } else {
         btn.innerHTML = `Sort Z - A`;
+    } else {
+        btn.innerHTML = `Sort A - Z`;
     }
 }
 
@@ -102,31 +100,29 @@ favOpen.addEventListener('click', () => {
         favDropDown.classList.add(isVisible);
         favSort.classList.add(isVisible);
         favSort.classList.remove(hidden);
+        favTypeContainer.classList.add(isVisible);
+        favTypeContainer.classList.remove(hidden);
         displayFavorites(favContainer.children);
         onParkClick(favContainer);
         getModalData(favContainer, favParks);
+        findDesignationTotals(favParks, favTypeContainer);
 })
 
-
-
 favClose.addEventListener('click', (e) => {
-    if(favHeader.className.includes(isVisible)){
         favHeader.classList.remove(isVisible);
         favContainer.classList.remove(isVisible);
         favDropDown.classList.remove(isVisible);
         favSort.classList.remove(isVisible);
         favSort.classList.add(hidden);
+        favTypeContainer.classList.add(hidden);
+        favTypeContainer.classList.remove(isVisible);
         displayFavorites(favContainer.children)
-    }
-    onParkClick(mainContainer);
+        onParkClick(mainContainer);
 })
 
-
-// I want to pull this data from the arrays
-
-const displayTotal = (countArr) => {
-    typeContainer.innerHTML = " ";
-    countArr.forEach((type) => {
+const displayTotal = (arr, container) => {
+    container.innerHTML = " ";
+    arr.forEach((type) => {
         const {name, count} = type;
         if(count > 0){
             const info = document.createElement('div');
@@ -134,28 +130,32 @@ const displayTotal = (countArr) => {
             info.innerHTML = `
             ${name}: ${count}
             `
-            typeContainer.appendChild(info);
+            container.appendChild(info);
         }
     })
 }
 
-// If a park has any of these four designations I want to increase a counter
-
-let designations = [
-    { name: 'National Parks', count: 0 },
-    { name: 'National Monuments', count: 0 },
-    { name: 'National Memorials', count: 0 },
-    { name: 'Other', count: 0 },
-];
-
-
-const displayDesignations = (array) => {
-    array.map(park => {
-        console.log(park.designation);
+const findDesignationTotals = (arr, container) => {
+    let designations = [
+        { name: 'National Park', count: 0 },
+        { name: 'National Monument', count: 0 },
+        { name: 'National Memorial', count: 0 },
+        { name: 'Other', count: 0 },
+    ];
+    arr.map(park => {
+        designations.forEach(type => {
+            if(type.name === park.designation){
+                type.count++
+            }
+        })
     })
-        // console.log(designations);
+    const sum = designations.reduce((acc, cur) => {
+        return acc + cur.count
+    }, 0);
+    const otherCount = arr.length - sum;
+    designations[3].count = otherCount;
+    displayTotal(designations, container);
 }
-
 
 const removeFromFavorites = (parkId) => {
     const park = favParks.find(park => park.id === parkId);
@@ -208,7 +208,6 @@ const closeModal = () => {
         modalContainer.innerHTML = '';
     });
 };
- 
 
 const renderDom = (array, container) => {
     container.innerHTML = '';
@@ -282,6 +281,6 @@ onStateChange.addEventListener('change', (e) => {
         .then(() => renderDom(parks, mainContainer))
         .then(() => onParkClick(mainContainer))
         .then(() => getModalData(mainContainer, parks))
-        .then(() => displayDesignations(parks))
+        .then(() => findDesignationTotals(parks, typeContainer))
         .catch((err) => console.log(err));
     });

@@ -54,7 +54,8 @@ body {
 .sort:hover { background-color: #c8c8c8;}
 
 .park.hidden,
-.sort.hidden {
+.sort.hidden,
+.fav-designation.hidden {
     display: none;
 }
 
@@ -74,10 +75,9 @@ body {
     margin-left: 1rem;
 }
 
-img,
-.logo img {
-     width: 100%; 
-    }
+img {
+    width: 100%; 
+}
 
 .nav-links {
     display: flex;
@@ -131,7 +131,7 @@ header {
 
 .filter { text-align: center; }
 
-.state-filter {
+.state-select {
     width: 100%;
     min-width: 15ch;
     max-width: 30ch;
@@ -145,7 +145,7 @@ header {
     text-align: center;
 }
 
-.state-filter:focus {
+.state-select:focus {
     outline: none;
 }
 
@@ -179,8 +179,8 @@ header {
 }
 
 .img-wrapper {
-    max-width: 250px;
-    max-height: 200px;
+    max-width: 300px;
+    max-height: 250px;
     overflow: hidden;
     border-radius: 10px;
 }
