@@ -5,7 +5,6 @@ const modalOpen = '[data-open]';
 const modalClose = '[data-close]';
 const modalBg = '.park-modal';
 const heart = '.fa-heart';
-const favPark = 'fav-park';
 const favorite = 'favorite';
 const designation = '[data-designation]';
 const sortBtn = '[data-sort]';
@@ -41,15 +40,13 @@ const showFavorites = (park) => {
     park.classList.add(isVisible);
 }
 
-const displayFavorites = (parks) => {
-    for(const park of parks){
+const displayFavorites = (array) => {
+    for(const park of array){
         favContainer.className.includes(isVisible)
         ? showFavorites(park)
         : hideFavorites(park)
     }
 }
-
-// Things get jammed up when removing favorites and sorting. Once sorted the onclick event is wrecked
 
 const sortParks = (array) => {
     array.sort(function(x, y) {
@@ -94,6 +91,11 @@ onClickSort.forEach((btn) => {
     })
 });
 
+const changeHeartColor = () => {
+    const favHearts = favContainer.querySelectorAll(heart);
+    favHearts.forEach(heart => heart.classList.add(favorite));
+}
+
 favOpen.addEventListener('click', () => {
         favContainer.classList.add(isVisible);
         favHeader.classList.add(isVisible);
@@ -106,6 +108,7 @@ favOpen.addEventListener('click', () => {
         onParkClick(favContainer);
         getModalData(favContainer, favParks);
         findDesignationTotals(favParks, favTypeContainer);
+        
 })
 
 favClose.addEventListener('click', (e) => {
@@ -176,7 +179,7 @@ const addToFavorites = (parkId) => {
     parks.splice(index, 1);
     renderDom(parks, mainContainer);
     renderDom(favParks, favContainer);
-    displayFavorites(favContainer.childNodes);
+    displayFavorites(favContainer.children);
     onParkClick(mainContainer);
 }
 
@@ -229,6 +232,7 @@ const renderDom = (array, container) => {
              `   
             container.appendChild(parkCard);
     })
+    changeHeartColor();
 }
 
 const renderModal = (park) => {

@@ -166,6 +166,7 @@ header {
     background-color: #e2e2e2;
     padding: 0.5rem;
     border-radius: 10px;
+    cursor: default;
 }
 
 .parks { margin-top: 2rem; }
@@ -175,7 +176,6 @@ header {
     background-color: #c7c7c7;
     border-radius: 10px;
     text-align: center;
-    position: relative;
 }
 
 .img-wrapper {
@@ -212,7 +212,6 @@ header {
 }
 
 .card-popup p {
-    /* margin-top: 2rem; */
     max-width: 20ch;
     margin-left: auto;
     margin-right: auto;
@@ -306,9 +305,3 @@ header {
 i.fa-solid.fa-heart.favorite  { color: #db506a; }
 
 .fa-heart:hover { color: rgba(51, 51, 51, 1); }
-
-/* .parks .park:hover .card-popup p { 
-    opacity: 1;
-    background-color: #c1c1c1;
-    color: #666;
- } */
