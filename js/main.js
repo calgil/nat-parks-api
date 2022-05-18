@@ -57,11 +57,11 @@ const sortParks = (array) => {
 }
 
 const reverseBtnText = (btn) => {
-    if (btn.className.includes('reverse')){
-        btn.innerHTML = `Sort Z - A`;
-    } else {
-        btn.innerHTML = `Sort A - Z`;
-    }
+    btn.className.includes('reverse')
+    ? btn.innerHTML = `Sort Z - A`
+    : btn.innerHTML = `Sort A - Z`;
+    onParkClick(mainContainer);
+    onParkClick(favContainer);
 }
 
 onClickSort.forEach((btn) => {
@@ -97,13 +97,8 @@ const changeHeartColor = () => {
 }
 
 favOpen.addEventListener('click', () => {
-        favContainer.classList.add(isVisible);
-        favHeader.classList.add(isVisible);
-        favDropDown.classList.add(isVisible);
-        favSort.classList.add(isVisible);
-        favSort.classList.remove(hidden);
-        favTypeContainer.classList.add(isVisible);
-        favTypeContainer.classList.remove(hidden);
+        [favContainer, favHeader, favDropDown, favSort, favTypeContainer].map(item => item.classList.add(isVisible));
+        [favSort, favTypeContainer].map(item => item.classList.remove(hidden));
         displayFavorites(favContainer.children);
         onParkClick(favContainer);
         getModalData(favContainer, favParks);
@@ -112,13 +107,8 @@ favOpen.addEventListener('click', () => {
 })
 
 favClose.addEventListener('click', (e) => {
-        favHeader.classList.remove(isVisible);
-        favContainer.classList.remove(isVisible);
-        favDropDown.classList.remove(isVisible);
-        favSort.classList.remove(isVisible);
-        favSort.classList.add(hidden);
-        favTypeContainer.classList.add(hidden);
-        favTypeContainer.classList.remove(isVisible);
+        [favContainer, favHeader, favDropDown, favSort, favTypeContainer].map(item => item.classList.remove(isVisible));
+        [favSort, favTypeContainer].map(item => item.classList.add(hidden));
         displayFavorites(favContainer.children)
         onParkClick(mainContainer);
 })
