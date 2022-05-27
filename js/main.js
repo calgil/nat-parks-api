@@ -91,10 +91,10 @@ onClickSort.forEach((btn) => {
     })
 });
 
-const changeHeartColor = () => {
-    const favHearts = favContainer.querySelectorAll(heart);
-    favHearts.forEach(heart => heart.classList.add(favorite));
-}
+// const changeHeartColor = () => {
+//     const favHearts = favContainer.querySelectorAll(heart);
+//     favHearts.forEach(heart => heart.classList.add(favorite));
+// }
 
 favOpen.addEventListener('click', () => {
         [favContainer, favHeader, favDropDown, favSort, favTypeContainer].map(item => item.classList.add(isVisible));
@@ -165,12 +165,19 @@ const removeFromFavorites = (parkId) => {
 const addToFavorites = (parkId) => {
     const park = parks.find(park => park.id === parkId);
     favParks.push(park);
-    const index = parks.indexOf(park);
-    parks.splice(index, 1);
+    const favPark = document.getElementById(parkId);
+    let favHeart = favPark.querySelector(heart)
+    // favHeart.classList.add(favorite)
+    console.log(favPark);
+    console.log(favHeart);
+    // changeHeartColor();
+    // const index = parks.indexOf(park);
+    // parks.splice(index, 1);
     renderDom(parks, mainContainer);
     renderDom(favParks, favContainer);
     displayFavorites(favContainer.children);
     onParkClick(mainContainer);
+    // Somewhere here gotta make a function to give a favorite count
 }
 
 const onParkClick = (container) => {
@@ -179,7 +186,7 @@ const onParkClick = (container) => {
         heart.addEventListener('click', (e) => {
             const parkId = e.target.dataset.fav;
             container === mainContainer
-            ? addToFavorites(parkId)
+            ? (addToFavorites(parkId), e.target.classList.add(favorite), console.log(e.target.classList))
             : removeFromFavorites(parkId);
         })
     })
@@ -222,7 +229,6 @@ const renderDom = (array, container) => {
              `   
             container.appendChild(parkCard);
     })
-    changeHeartColor();
 }
 
 const renderModal = (park) => {

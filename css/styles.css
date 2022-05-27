@@ -302,6 +302,6 @@ header {
 
 .fa-heart, .open-modal { cursor: pointer; }
 
-i.fa-solid.fa-heart.favorite  { color: #db506a; }
+.fa-solid.fa-heart.favorite  { color: #db506a; }
 
 .fa-heart:hover { color: rgba(51, 51, 51, 1); }
