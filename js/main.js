@@ -25,10 +25,10 @@ const typeContainer = document.querySelector('.designation');
 const mainContainer = document.querySelector('.parks');
 const modalContainer = document.querySelector('.modal-box');
 
-let selectedState;
 let parks = [];
 let favParks = [];
 let modal = [];
+let favIds = [];
 
 // I'm sure these three functions can be one
 
@@ -62,8 +62,8 @@ const reverseBtnText = (btn) => {
     btn.className.includes('reverse')
     ? btn.innerHTML = `Sort Z - A`
     : btn.innerHTML = `Sort A - Z`;
-    onParkClick(mainContainer);
-    onParkClick(favContainer);
+    // onParkClick(mainContainer);
+    // onParkClick(favContainer);
 }
 
 onClickSort.forEach((btn) => {
@@ -93,16 +93,11 @@ onClickSort.forEach((btn) => {
     })
 });
 
-// const changeHeartColor = () => {
-//     const favHearts = favContainer.querySelectorAll(heart);
-//     favHearts.forEach(heart => heart.classList.add(favorite));
-// }
-
 favOpen.addEventListener('click', () => {
         [favContainer, favHeader, favDropDown, favSort, favTypeContainer].map(item => item.classList.add(isVisible));
         [favSort, favTypeContainer].map(item => item.classList.remove(hidden));
         displayFavorites(favContainer.children);
-        onParkClick(favContainer);
+        // onParkClick(favContainer);
         getModalData(favContainer, favParks);
         findDesignationTotals(favParks, favTypeContainer);
         
@@ -112,7 +107,7 @@ favClose.addEventListener('click', (e) => {
         [favContainer, favHeader, favDropDown, favSort, favTypeContainer].map(item => item.classList.remove(isVisible));
         [favSort, favTypeContainer].map(item => item.classList.add(hidden));
         displayFavorites(favContainer.children)
-        onParkClick(mainContainer);
+        // onParkClick(mainContainer);
 })
 
 const displayTotal = (arr, container) => {
@@ -154,54 +149,39 @@ const findDesignationTotals = (arr, container) => {
 
 const removeFromFavorites = (parkId) => {
     const park = favParks.find(park => park.id === parkId);
-    if(park.states === selectedState){
-        parks.push(park);
-    }
     const index = favParks.indexOf(park);
     favParks.splice(index, 1);
     renderDom(parks, mainContainer);
-    renderDom(favParks, favContainer);
-    onParkClick(favContainer);
+    // renderDom(favParks, favContainer);
 }
 
 const addToFavorites = (parkId) => {
     const park = document.getElementById(parkId);
     const parkClone = park.cloneNode(true);
-    
-
-    // Ahhhh! This is my nightmare. There has to be a simple and easy solution
-    // Check for duplicates here
-    // favParks.push(parkClone);
-    let newFav = (parkClone.id += 'fav')
-    const currentFavs = favContainer.children
-    for(const fav of currentFavs) {
-        fav.id === newFav
-        ? console.log('existing')
-        : console.log('new');
+    parkClone.id += 'fav';
+    if(favIds.length === 0){
+        parkClone.classList.add(hidden);
+        favContainer.appendChild(parkClone);
+        favIds.push(parkClone.id);
+    } else {
+            if (!favIds.includes(parkClone.id)) {
+                parkClone.classList.add(hidden);
+                favContainer.appendChild(parkClone);
+                favIds.push(parkClone.id);
+       }
     }
-    // favContainer.appendChild(parkClone)
-
-    // favParks.map((park) => {
-    //     park.id += 'fav';
-    //     park.classList.add(hidden);
-    //     // Can't append child in the map. Too many duplicates
-    //     // favContainer.appendChild(park);
-    //     // let favHeart = park.querySelector(heart);
-    //     // favHeart.classList.add(favorite);
-    //     // console.log(favHeart);
-    // })
-    onParkClick(mainContainer);
-    // Somewhere here gotta make a function to give a favorite count
+    // Eventually I want to update a fav counter & display it next to favorites
 }
 
-const onParkClick = async (container) => {
-    const hearts = container.querySelectorAll('[data-fav]');
+const onParkClick = async () => {
+    const hearts = document.querySelectorAll('[data-fav]');
     hearts.forEach((heart) => {
         heart.addEventListener('click', (e) => {
             const parkId = e.target.dataset.fav;
-            container === mainContainer
-            ? (addToFavorites(parkId), e.target.classList.add(favorite))
-            : (removeFromFavorites(parkId), e.target.classList.remove(favorite));
+            const fav = parkId.slice(-3);
+            fav === 'fav'
+            ? (removeFromFavorites(parkId), e.target.classList.remove(favorite))
+            : addToFavorites(parkId), e.target.classList.add(favorite);
         })
     })
 }
@@ -286,18 +266,20 @@ const getModalData = (container, array) => {
 }
 
 async function fetchData (value) {
-    const response = await fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
-    const parkData = await response.json();
-    parks = await parkData.data;
-    renderDom(parks, mainContainer);
-    onParkClick(mainContainer);
-    getModalData(mainContainer, parks);
-    findDesignationTotals(parks, typeContainer);
+    try {
+        const response = await fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
+        const parkData = await response.json();
+        parks = await parkData.data;
+        renderDom(parks, mainContainer);
+        onParkClick(mainContainer);
+        getModalData(mainContainer, parks);
+        findDesignationTotals(parks, typeContainer);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-
 onStateChange.addEventListener('change', (e) => {
-    selectedState = e.target.value;
     const value = e.target.value.toLowerCase();
     fetchData(value);
     });
