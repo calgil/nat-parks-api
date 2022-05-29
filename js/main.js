@@ -30,6 +30,8 @@ let parks = [];
 let favParks = [];
 let modal = [];
 
+// I'm sure these three functions can be one
+
 const hideFavorites = (park) => {
     park.classList.add(hidden);
     park.classList.remove(isVisible);
@@ -163,31 +165,43 @@ const removeFromFavorites = (parkId) => {
 }
 
 const addToFavorites = (parkId) => {
-    const park = parks.find(park => park.id === parkId);
-    favParks.push(park);
-    const favPark = document.getElementById(parkId);
-    let favHeart = favPark.querySelector(heart)
-    // favHeart.classList.add(favorite)
-    console.log(favPark);
-    console.log(favHeart);
-    // changeHeartColor();
-    // const index = parks.indexOf(park);
-    // parks.splice(index, 1);
-    renderDom(parks, mainContainer);
-    renderDom(favParks, favContainer);
-    displayFavorites(favContainer.children);
+    const park = document.getElementById(parkId);
+    const parkClone = park.cloneNode(true);
+    
+
+    // Ahhhh! This is my nightmare. There has to be a simple and easy solution
+    // Check for duplicates here
+    // favParks.push(parkClone);
+    let newFav = (parkClone.id += 'fav')
+    const currentFavs = favContainer.children
+    for(const fav of currentFavs) {
+        fav.id === newFav
+        ? console.log('existing')
+        : console.log('new');
+    }
+    // favContainer.appendChild(parkClone)
+
+    // favParks.map((park) => {
+    //     park.id += 'fav';
+    //     park.classList.add(hidden);
+    //     // Can't append child in the map. Too many duplicates
+    //     // favContainer.appendChild(park);
+    //     // let favHeart = park.querySelector(heart);
+    //     // favHeart.classList.add(favorite);
+    //     // console.log(favHeart);
+    // })
     onParkClick(mainContainer);
     // Somewhere here gotta make a function to give a favorite count
 }
 
-const onParkClick = (container) => {
+const onParkClick = async (container) => {
     const hearts = container.querySelectorAll('[data-fav]');
     hearts.forEach((heart) => {
         heart.addEventListener('click', (e) => {
             const parkId = e.target.dataset.fav;
             container === mainContainer
-            ? (addToFavorites(parkId), e.target.classList.add(favorite), console.log(e.target.classList))
-            : removeFromFavorites(parkId);
+            ? (addToFavorites(parkId), e.target.classList.add(favorite))
+            : (removeFromFavorites(parkId), e.target.classList.remove(favorite));
         })
     })
 }
@@ -209,7 +223,7 @@ const closeModal = () => {
     });
 };
 
-const renderDom = (array, container) => {
+const renderDom = async (array, container) => {
     container.innerHTML = '';
     array.forEach(park => {
         const {id, fullName, designation} = park;
@@ -231,7 +245,7 @@ const renderDom = (array, container) => {
     })
 }
 
-const renderModal = (park) => {
+const renderModal = async (park) => {
         const {fullName, description, directionsUrl} = park;
         const {altText, url} = park.images[1];
         const parkModal = document.createElement('div');
@@ -271,16 +285,19 @@ const getModalData = (container, array) => {
     })
 }
 
+async function fetchData (value) {
+    const response = await fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
+    const parkData = await response.json();
+    parks = await parkData.data;
+    renderDom(parks, mainContainer);
+    onParkClick(mainContainer);
+    getModalData(mainContainer, parks);
+    findDesignationTotals(parks, typeContainer);
+}
+
+
 onStateChange.addEventListener('change', (e) => {
     selectedState = e.target.value;
     const value = e.target.value.toLowerCase();
-    const endpoint = fetch(`https://developer.nps.gov/api/v1/parks?stateCode=${ value }&api_key=2hL7WMh7PeKnrwR39LONcMrAMvibH0MiBL8QMMSH`);
-    endpoint
-        .then((res) => res.json())
-        .then((res) => parks = res.data)
-        .then(() => renderDom(parks, mainContainer))
-        .then(() => onParkClick(mainContainer))
-        .then(() => getModalData(mainContainer, parks))
-        .then(() => findDesignationTotals(parks, typeContainer))
-        .catch((err) => console.log(err));
+    fetchData(value);
     });
